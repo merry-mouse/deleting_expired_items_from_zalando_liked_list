@@ -29,13 +29,44 @@ time.sleep(4)
 num_liked_pieces = driver.find_element_by_xpath('//html/body/div/div/div/div/div/div/div/div/div/div/span').get_attribute("innerText") # long comment
 NUM_raw = re.match("(^\d*)", num_liked_pieces)
 Num_liked_final = int(NUM_raw.group(1))
-Num_liked_final
+print("There are {} liked items on the page".format(Num_liked_final))
 
 liked_clothes1 = driver.find_element_by_xpath("//h3[text()='Gillade artiklar']").click()
 time.sleep(4)
 
 i = 1
 while i <= int(Num_liked_final/20):
-    driver.execute_script("window.scrollTo(0, window.scrollY + 2475)")
+    driver.execute_script("window.scrollTo(0, window.scrollY + 2478)")
     time.sleep(5)
     i = i + 1
+
+# getting the list of all jobs
+items_list = driver.find_elements_by_css_selector("div.v9kdwN")
+print('You are scraping information about {} items.'.format(len(items_list)))
+
+sold_items = []
+expired_items = []
+for item in items_list:
+    try:
+        expired = item.find_element_by_xpath(".//*[text()='Inte tillgänglig']")
+        expired_items.append(expired)
+    except:
+        pass
+
+for item in items_list:
+    try:
+        sold = item.find_element_by_xpath(".//*[text()='Slutsåld']")
+        sold_items.append(sold)
+    except:
+        pass
+
+print("There are {} expired items found".format(len(expired_items)))
+print("There are {} soldout items found".format(len(sold_items)))
+
+for item in expired_items:
+    button = item.find_element_by_xpath('..').find_element_by_xpath('..').find_element_by_tag_name("button")
+
+for item in expired_items:
+    print(item.find_element_by_xpath('..').find_element_by_xpath('..').get_attribute("outerHTML"))
+
+
