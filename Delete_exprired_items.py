@@ -1,13 +1,7 @@
 from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.wait import WebDriverWait
-from selenium.common import exceptions
 from selenium.common.exceptions import ElementClickInterceptedException
 from selenium.common.exceptions import TimeoutException
 from selenium.common.exceptions import NoSuchElementException
-from selenium.webdriver.support.expected_conditions import staleness_of
 import time
 import re
 
@@ -23,7 +17,7 @@ time.sleep(2)
 username = driver.find_element_by_xpath("//input[@name='login.email']")
 password = driver.find_element_by_xpath("//input[@name='login.secret']")
 
-username.send_keys("someusername,gmail.com")
+username.send_keys("someusername.google.com")
 password.send_keys("somepassword")
 submit = driver.find_element_by_xpath("//button[@data-testid='login_button']").click()
 time.sleep(4)
@@ -66,7 +60,7 @@ for item in items_list:
     except:
         pass
 
-print("From {} liked items there are\n{} expired items\n and\n{} sold out items.".format(len(items_list), expired_items, sold_items))
+print("From {} liked items there are\n{} expired items\n and\n{} sold out items.".format(len(items_list), len(expired_items), len(sold_items)))
 
 while True:
     try:
@@ -82,5 +76,20 @@ while True:
     except NoSuchElementException:
         print("No such Element")
         break
+
+while True:
+    try:
+        driver.find_element_by_xpath("//*[text()='Slutsåld']").find_element_by_xpath('..').find_element_by_xpath('..').find_element_by_xpath('..').find_element_by_xpath('..').find_element_by_xpath('..').find_element_by_xpath('..').find_element_by_xpath('..').find_element_by_tag_name("button").click() #long comment
+        time.sleep(11)
+    except ElementClickInterceptedException:
+        driver.execute_script("window.scrollTo(0, window.scrollY + 500)")
+        print("Scrolling down...")
+        continue
+    except TimeoutException:
+        print("TimeoutException\nCan't find any expired items.")
+    except NoSuchElementException:
+        print("No such Element")
+        break
+
 
 
