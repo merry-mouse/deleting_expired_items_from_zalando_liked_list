@@ -1,3 +1,4 @@
+# necessary libraries and modules
 from selenium import webdriver
 from selenium.common.exceptions import ElementClickInterceptedException
 from selenium.common.exceptions import TimeoutException
@@ -5,6 +6,7 @@ from selenium.common.exceptions import NoSuchElementException
 import time
 import re
 
+print("Openning browser...")
 
 # initialize automated browser window, specify the browser we want to use
 # store the path of the driver file in the brackets
@@ -14,26 +16,29 @@ driver.get("https://accounts.zalando.com/authenticate?request=eyJjbGllbnRfaWQiOi
 driver.set_page_load_timeout(10)
 time.sleep(2)
 
+print("Login to the account...")
 username = driver.find_element_by_xpath("//input[@name='login.email']")
 password = driver.find_element_by_xpath("//input[@name='login.secret']")
-
 username.send_keys("someusername.google.com")
 password.send_keys("somepassword")
 submit = driver.find_element_by_xpath("//button[@data-testid='login_button']").click()
 time.sleep(4)
 
+print("Clicking on the list of favorite items...")
 liked_clothes = driver.find_element_by_xpath("//a[@title='Önskelista']").click()
 time.sleep(4)
 
+print("Checking how many liked items in your list...")
 num_liked_pieces = driver.find_element_by_xpath('//html/body/div/div/div/div/div/div/div/div/div/div/span').get_attribute("innerText") # long comment
 NUM_raw = re.match("(^\d*)", num_liked_pieces)
 Num_liked_final = int(NUM_raw.group(1))
-print("There are {} items in your list at the website".format(Num_liked_final))
+print("There are {} items in your list at the website. Check if matches with the number on the website.".format(Num_liked_final))
 
+print("Openning the list of liked items...")
 driver.find_element_by_xpath("//h3[text()='Gillade artiklar']").click()
 time.sleep(4)
 
-
+print("Getting info about all the pieces by scrolling until the bottom of the page...")
 i = 1
 while i <= int(Num_liked_final/20)+1:
     driver.execute_script("window.scrollTo(0, window.scrollY + 2478)")
@@ -44,6 +49,7 @@ while i <= int(Num_liked_final/20)+1:
 items_list = driver.find_elements_by_css_selector("div.v9kdwN")
 print('You are scraping information about {} items.'.format(len(items_list)))
 
+print("Counting the number of expired and sold out items...")
 sold_items = []
 expired_items = []
 for item in items_list:
@@ -59,9 +65,9 @@ for item in items_list:
         sold_items.append(sold)
     except:
         pass
-
 print("From {} liked items there are\n{} expired items\n and\n{} sold out items.".format(len(items_list), len(expired_items), len(sold_items)))
 
+print("deleting all the expired items if there are any...")
 while True:
     try:
         driver.find_element_by_xpath("//*[text()='Inte tillgänglig']").find_element_by_xpath('..').find_element_by_xpath('..').find_element_by_tag_name("button").click() #long comment
@@ -77,6 +83,7 @@ while True:
         print("No such Element")
         break
 
+print("deleting all the sold out items if there are any...")
 while True:
     try:
         driver.find_element_by_xpath("//*[text()='Slutsåld']").find_element_by_xpath('..').find_element_by_xpath('..').find_element_by_xpath('..').find_element_by_xpath('..').find_element_by_xpath('..').find_element_by_xpath('..').find_element_by_xpath('..').find_element_by_tag_name("button").click() #long comment
@@ -90,6 +97,5 @@ while True:
     except NoSuchElementException:
         print("No such Element")
         break
-
-
+print("Done with all the tasks!")
 
