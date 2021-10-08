@@ -19,6 +19,7 @@ driver.set_page_load_timeout(10)
 time.sleep(2)
 
 # login to the acoount
+# CHANGE PASSWORD AND USERNAME
 print("Login to the account...\n\n")
 username = driver.find_element_by_xpath("//input[@name='login.email']")
 password = driver.find_element_by_xpath("//input[@name='login.secret']")
